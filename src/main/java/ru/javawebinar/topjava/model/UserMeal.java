@@ -26,4 +26,11 @@ public class UserMeal {
     public int getCalories() {
         return calories;
     }
+
+    public void printThis() {
+        System.out.println(this.dateTime);
+        System.out.println(this.description);
+        System.out.println(this.calories);
+    }
+
 }

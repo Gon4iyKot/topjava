@@ -18,7 +18,7 @@
         <th>Дата/Время</th>
         <th>Описание</th>
         <th>Калории</th>
-        <th>Перебор</th>
+        <th>Действия</th>
     </tr>
     <c:forEach items="${fullListOfMeals}" var="meal">
         <jsp:useBean id="meal" type="ru.javawebinar.topjava.model.MealTo"/>
@@ -27,10 +27,19 @@
                 <fmt:formatDate value="${parsedDateTime}" pattern="yyyy.MM.dd HH:mm"/></td>
             <td>${meal.description}</td>
             <td>${meal.calories}</td>
-            <td>${meal.excess}</td>
+            <td><a href="meals?action=delete&uuid=${meal.uuid}">Delete</a><br><a
+                    href="meals?action=edit&uuid=${meal.uuid}">Edit</a></td>
         </tr>
     </c:forEach>
 </table>
 <hr>
+<section>
+    <form action="meals" method="post">
+        <input type="datetime-local" name="dateTime" placeholder="Дата/Время">
+        <input type="text" name="description" placeholder="Название еды">
+        <input type="number" name="calories" placeholder="Количество калорий">
+        <input type="submit" value="Добавить">
+    </form>
+</section>
 </body>
 </html>

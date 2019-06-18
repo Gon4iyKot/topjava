@@ -7,6 +7,8 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
 
+import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Map;
@@ -22,7 +24,8 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     private AtomicInteger counter = new AtomicInteger(0);
 
     {
-        MealsUtil.MEALS.forEach(meal -> save(meal, 0));
+        MealsUtil.MEALS.forEach(meal -> save(meal, 1));
+        save(new Meal(LocalDateTime.of(2015, Month.MAY, 30, 20, 0), "последний конь", 500), 9);
     }
 
     @Override

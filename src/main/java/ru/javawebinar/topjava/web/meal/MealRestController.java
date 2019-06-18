@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
+import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.util.Collection;
 
@@ -14,34 +15,40 @@ public class MealRestController {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final MealService service;
+    int authKey;
 
     @Autowired
     public MealRestController(MealService service) {
         this.service = service;
     }
 
-    public Meal create(Meal meal, int userId) {
-        log.info("create", meal);
-        return service.create(meal, userId);
+    public Meal create(Meal meal) {
+        authKey = SecurityUtil.authUserId();
+        log.info("create meal {}", meal);
+        return service.create(meal, authKey);
     }
 
-    public Meal get(int id, int userId) {
-        log.info("get", id);
-        return service.get(id, userId);
+    public Meal get(int id) {
+        authKey = SecurityUtil.authUserId();
+        log.info("get by id {}", id);
+        return service.get(id, authKey);
     }
 
-    public void delete(int id, int userId) {
-        log.info("delete", id);
-        service.delete(id, userId);
+    public void delete(int id) {
+        authKey = SecurityUtil.authUserId();
+        log.info("delete by id {}", id);
+        service.delete(id, authKey);
     }
 
-    public void update(Meal meal, int userId) {
-        log.info("update", meal);
-        service.update(meal, userId);
+    public void update(Meal meal) {
+        authKey = SecurityUtil.authUserId();
+        log.info("update meal {}", meal);
+        service.update(meal, authKey);
     }
 
-    public Collection<Meal> getAll(int userId) {
-        log.info("getall", userId);
-        return service.getAll(userId);
+    public Collection<Meal> getAll() {
+        authKey = SecurityUtil.authUserId();
+        log.info("getall with authKey {}", authKey);
+        return service.getAll(authKey);
     }
 }

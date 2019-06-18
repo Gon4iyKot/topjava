@@ -10,6 +10,7 @@ import java.util.Collection;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
 
+
 @Service
 public class MealServiceImpl implements MealService {
 

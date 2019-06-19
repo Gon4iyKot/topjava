@@ -21,15 +21,14 @@
     <h3><a href="index.html">Home</a></h3>
     <hr/>
     <h2>Meals</h2>
-<%--
     <form method="post" action="meals">
-        <input type="date" name="dateFrom" placeholder="Дата начала">
-        <input type="date" name="dateTo" placeholder="Дата конца">
+        <input type="hidden" name="action" value="filterMeals">
+        <input type="date" value="2015-05-31" name="dateFrom" placeholder="Дата начала">
+        <input type="date" value="2015-05-31" name="dateTo" placeholder="Дата конца">
         <input type="time" name="timeFrom" placeholder="Время начала">
         <input type="time" name="timeTo" placeholder="Время конца">
         <button type="submit">Применить фильтр</button>
     </form>
---%>
     <hr/>
     <a href="meals?action=create">Add Meal</a>
     <br><br>

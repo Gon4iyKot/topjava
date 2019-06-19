@@ -88,9 +88,4 @@ public class User extends AbstractNamedEntity {
                 ", caloriesPerDay=" + caloriesPerDay +
                 ')';
     }
-
-    public int compareTo(User other) {
-        int nameCompare = name.compareTo(other.getName());
-        return nameCompare == 0 ? this.id.compareTo(other.getId()) : nameCompare;
-    }
 }

@@ -5,9 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Collection;
@@ -35,12 +37,12 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public Meal save(Meal meal, int userId) {
-        repository.computeIfAbsent(userId, ConcurrentHashMap::new);
+        Map<Integer, Meal> userMeals = repository.computeIfAbsent(userId, ConcurrentHashMap::new);
         log.info("save {}", meal);
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
             meal.setUserId(userId);
-            repository.get(userId).put(meal.getId(), meal);
+            userMeals.put(meal.getId(), meal);
             return meal;
         }
         try {
@@ -48,7 +50,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
                 throw new NotFoundException("user is not an owner of this meal");
             }
             // treat case: update, but absent in storage
-            return repository.get(userId).computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
+            return userMeals.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
         } catch (NullPointerException e) {
             throw new NotFoundException("id does not exist");
         }
@@ -78,5 +80,11 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     public Collection<Meal> getAll(int userId) {
         return repository.get(userId).values().stream()
                 .sorted(Comparator.comparing(Meal::getDate).reversed()).collect(Collectors.toList());
+    }
+
+    public Collection<Meal> getAllFiltered(int userId, LocalDate startDate, LocalDate endDate) {
+        log.info("getFilteredAll запущен");
+        return getAll(userId).stream().filter(a -> DateTimeUtil
+                .isBetweenDate(a.getDate(), startDate, endDate)).collect(Collectors.toList());
     }
 }

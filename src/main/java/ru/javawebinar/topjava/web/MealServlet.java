@@ -49,14 +49,19 @@ public class MealServlet extends HttpServlet {
         request.setCharacterEncoding("UTF-8");
         String id = request.getParameter("id");
 
+
         Meal meal = new Meal(id.isEmpty() ? null : Integer.valueOf(id),
-                SecurityUtil.authUserId(),
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")));
 
         log.info(meal.isNew() ? "Create {}" : "Update {}", meal);
-        mealRestController.create(meal);
+        if (meal.isNew()) {
+            mealRestController.create(meal);
+        } else {
+            int mealId = Integer.parseInt(id);
+            mealRestController.update(meal, mealId);
+        }
         response.sendRedirect("meals");
     }
 
@@ -81,7 +86,6 @@ public class MealServlet extends HttpServlet {
                 break;
             case "all":
             default:
-                log.info("getAll with auth id {}", SecurityUtil.authUserId());
                 request.setAttribute("meals",
                         MealsUtil.getWithExcess(mealRestController.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);

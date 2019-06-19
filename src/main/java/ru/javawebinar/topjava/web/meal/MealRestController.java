@@ -10,6 +10,9 @@ import ru.javawebinar.topjava.web.SecurityUtil;
 
 import java.util.Collection;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
+
 @Controller
 public class MealRestController {
     private final Logger log = LoggerFactory.getLogger(getClass());
@@ -25,6 +28,8 @@ public class MealRestController {
     public Meal create(Meal meal) {
         authKey = SecurityUtil.authUserId();
         log.info("create meal {}", meal);
+        meal.setUserId(authKey);
+        checkNew(meal);
         return service.create(meal, authKey);
     }
 
@@ -40,9 +45,11 @@ public class MealRestController {
         service.delete(id, authKey);
     }
 
-    public void update(Meal meal) {
+    public void update(Meal meal, int id) {
         authKey = SecurityUtil.authUserId();
         log.info("update meal {}", meal);
+        meal.setUserId(authKey);
+        assureIdConsistent(meal, id);
         service.update(meal, authKey);
     }
 

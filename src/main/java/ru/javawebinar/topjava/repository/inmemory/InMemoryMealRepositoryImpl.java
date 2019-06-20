@@ -45,35 +45,20 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
             userMeals.put(meal.getId(), meal);
             return meal;
         }
-        try {
-            if (meal.getUserId() != userId) {
-                throw new NotFoundException("user is not an owner of this meal");
-            }
-            // treat case: update, but absent in storage
-            return userMeals.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
-        } catch (NullPointerException e) {
-            throw new NotFoundException("id does not exist");
-        }
+        // treat case: update, but absent in storage
+        return userMeals.computeIfPresent(meal.getId(), (id, oldMeal) -> meal);
     }
 
     @Override
     public boolean delete(int id, int userId) {
-        try {
-            return repository.get(userId) != null && repository.get(userId).remove(id) != null;
-        } catch (NullPointerException e) {
-            throw new NotFoundException("id not found");
-        }
+        return repository.get(userId) != null && repository.get(userId).remove(id) != null;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        try {
-            Meal tempMeal = repository.get(userId).get(id);
-            log.info("get {}", tempMeal);
-            return tempMeal.getUserId() == userId ? tempMeal : null;
-        } catch (NullPointerException e) {
-            throw new NotFoundException("id not found");
-        }
+        Map<Integer, Meal> mapOfUser = repository.get(userId);
+        log.info("get {}", mapOfUser);
+        return mapOfUser != null ? repository.get(userId).get(id) : null;
     }
 
     @Override

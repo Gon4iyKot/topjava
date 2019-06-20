@@ -32,7 +32,10 @@ public class MealServiceImpl implements MealService {
 
     @Override
     public Meal get(int id, int userId) throws NotFoundException {
-        return checkNotFoundWithId(repository.get(id, userId), id);
+        Meal tempMeal = checkNotFoundWithId(repository.get(id, userId), id);
+        if (tempMeal==null)
+            throw new NotFoundException("meal or user was not found");
+        return tempMeal;
     }
 
     @Override

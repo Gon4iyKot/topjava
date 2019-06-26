@@ -44,7 +44,7 @@ public class JdbcMealRepository implements MealRepository {
                 .addValue("calories", meal.getCalories());
         if (meal.isNew()) {
             meal.setId((simpleJdbcInsert.execute(mealsMap)));
-        } else if (namedParameterJdbcTemplate.update("update meals set date_time=:date_time, description=:description, calories=:calories where id=:id", mealsMap) == 0) {
+        } else if (namedParameterJdbcTemplate.update("UPDATE meals SET date_time=:date_time, description=:description, calories=:calories WHERE id=:id AND user_id=:user_id", mealsMap) == 0) {
             return null;
         }
         return meal;
@@ -52,28 +52,22 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public boolean delete(int id, int userId) {
-        return jdbcTemplate.update("delete from meals where id=? and user_id=?", id, userId) != 0;
+        return jdbcTemplate.update("DELETE FROM meals WHERE id=? AND user_id=?", id, userId) != 0;
     }
 
     @Override
     public Meal get(int id, int userId) {
-        List<Meal> mealList = jdbcTemplate.query("select * from meals where id=? and user_id=?", MEAL_ROW_MAPPER, id, userId);
+        List<Meal> mealList = jdbcTemplate.query("SELECT * FROM meals WHERE id=? AND user_id=?", MEAL_ROW_MAPPER, id, userId);
         return DataAccessUtils.singleResult(mealList);
     }
 
     @Override
     public List<Meal> getAll(int userId) {
-        List<Meal> mealList = jdbcTemplate.query("select * from meals where user_id=?", MEAL_ROW_MAPPER, userId);
-        return mealList.stream().sorted(Comparator.comparing(Meal::getDate)).collect(Collectors.toList());
+        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id=? ORDER BY date_time DESC", MEAL_ROW_MAPPER, userId);
     }
 
     @Override
     public List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
-        List<Meal> mealList = getAll(userId);
-        return mealList == null ? Collections.emptyList() :
-                mealList.stream()
-                        .filter(meal -> Util.isBetween(meal.getDateTime(), startDate, endDate))
-                        .sorted(Comparator.comparing(Meal::getDateTime).reversed())
-                        .collect(Collectors.toList());
+        return jdbcTemplate.query("SELECT * FROM meals WHERE user_id=? AND date_time BETWEEN ? and ? ORDER BY date_time DESC", MEAL_ROW_MAPPER, userId, startDate, endDate);
     }
 }

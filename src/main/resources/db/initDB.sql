@@ -8,12 +8,12 @@ CREATE SEQUENCE global_seq START WITH 100000;
 CREATE TABLE users
 (
   id               INTEGER PRIMARY KEY DEFAULT nextval('global_seq'),
-  name             VARCHAR                 NOT NULL,
-  email            VARCHAR                 NOT NULL,
-  password         VARCHAR                 NOT NULL,
-  registered       TIMESTAMP DEFAULT now() NOT NULL,
-  enabled          BOOL DEFAULT TRUE       NOT NULL,
-  calories_per_day INTEGER DEFAULT 2000    NOT NULL
+  name             VARCHAR                           NOT NULL,
+  email            VARCHAR                           NOT NULL,
+  password         VARCHAR                           NOT NULL,
+  registered       TIMESTAMP           DEFAULT now() NOT NULL,
+  enabled          BOOL                DEFAULT TRUE  NOT NULL,
+  calories_per_day INTEGER             DEFAULT 2000  NOT NULL
 );
 CREATE UNIQUE INDEX users_unique_email_idx ON users (email);
 
@@ -25,18 +25,19 @@ CREATE TABLE user_roles
   FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 
-create table meals
+CREATE TABLE meals
 (
-  id int default nextval('global_seq'),
-  user_id int not null
-    constraint meal_user_id_fk
-      references users
-      on update restrict on delete cascade,
-  date_time timestamp default now() not null,
-  description varchar not null,
-  calories int not null
+  id          INTEGER
+    CONSTRAINT meals_pk PRIMARY KEY DEFAULT nextval('global_seq'),
+  user_id     INTEGER                             NOT NULL
+    CONSTRAINT meal_user_id_fk
+      REFERENCES users
+      ON UPDATE RESTRICT ON DELETE CASCADE,
+  date_time   TIMESTAMP             DEFAULT now() NOT NULL,
+  description VARCHAR                             NOT NULL,
+  calories    INTEGER                             NOT NULL
 );
 
-create unique index meals_id_uindex on meals (id);
-
-alter table meals add constraint meals_pk primary key (id);
+CREATE UNIQUE INDEX meals_id_uindex ON meals (id);
+CREATE UNIQUE INDEX meals_user_id_date_time_uindex
+  ON meals (user_id, date_time);

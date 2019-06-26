@@ -40,11 +40,6 @@ public class MealServiceTest {
     @Autowired
     MealService service;
 
-    @Before
-    public void setUp() {
-
-    }
-
     @Test
     public void get() {
         Meal meal = service.get(FIRST_MEAL_ID, USER_ID);

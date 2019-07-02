@@ -37,7 +37,7 @@ import static ru.javawebinar.topjava.UserTestData.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
-    private Logger logger = LoggerFactory.getLogger(MealServiceTest.class);
+    private static Logger logger = LoggerFactory.getLogger(MealServiceTest.class);
 
     @Autowired
     private MealService service;
@@ -65,7 +65,7 @@ public class MealServiceTest {
     @AfterClass
     public static void afterClassFunc() {
         System.out.println("HERE IS YOUR TEST REPORT");
-        listOfTimings.forEach(System.out::println);
+        listOfTimings.forEach(tm -> logger.info(tm));
     }
 
     @Test
@@ -91,7 +91,6 @@ public class MealServiceTest {
         Meal newMeal = getCreated();
         Meal created = service.create(newMeal, USER_ID);
         newMeal.setId(created.getId());
-        newMeal.setUser(USER);
         assertMatch(newMeal, created);
         assertMatch(service.getAll(USER_ID), newMeal, MEAL6, MEAL5, MEAL4, MEAL3, MEAL2, MEAL1);
     }

@@ -7,16 +7,39 @@
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <charset>UTF-8</charset>
+            <pattern>%-35(%d{HH:mm:ss.SSS} %-5level) %-80(%class{50}.%M:%L) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="eachTestLog" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
             <pattern>%-35(%d{HH:mm:ss.SSS} %red(%-5level)) %-80(%class{50}.%M:%L) - %green(%msg%n)</pattern>
         </encoder>
     </appender>
 
+
+    <appender name="testTimer" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>%cyan(%msg%n)</pattern>
+        </encoder>
+
+    </appender>
+
     <logger name="org.postgresql" level="debug"/>
     <logger name="org.springframework.jdbc" level="debug"/>
-    <logger name="ru.javawebinar.topjava" level="debug"/>
+    <logger name="ru.javawebinar.topjava" level="INFO">
+        <appender-ref ref="eachTestLog"/>
+    </logger>
+    <logger name="testResultLogger" level="INFO">
+        <appender-ref ref="testTimer"/>
+    </logger>
 
-    <root level="INFO">
-        <appender-ref ref="console"/>
-    </root>
+    <!--
+                <root level="INFO">
+                    <appender-ref ref="console"/>
+                </root>
+    -->
 
 </configuration>

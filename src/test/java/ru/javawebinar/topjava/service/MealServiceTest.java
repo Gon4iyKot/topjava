@@ -37,7 +37,9 @@ import static ru.javawebinar.topjava.UserTestData.*;
 @RunWith(SpringJUnit4ClassRunner.class)
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
-    private static Logger logger = LoggerFactory.getLogger(MealServiceTest.class);
+    private static Logger logger1 = LoggerFactory.getLogger(MealServiceTest.class);
+    private static Logger logger2 = LoggerFactory.getLogger("testResultLogger");
+
 
     @Autowired
     private MealService service;
@@ -52,8 +54,14 @@ public class MealServiceTest {
 
                 @Override
                 protected void finished(long nanos, Description description) {
-                    logger.info("method \"{}\" tested in {} millis", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
-                    listOfTimings.add(description.getMethodName() + "  " + TimeUnit.NANOSECONDS.toMillis(nanos));
+                    logger1.info("method \"{}\" tested in {} millis", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
+                    StringBuilder builder = new StringBuilder();
+                    builder.append(description.getMethodName());
+                    for (int i = 0; i < (20 - description.getMethodName().length()); i++) {
+                        builder.append(" ");
+                    }
+                    builder.append(TimeUnit.NANOSECONDS.toMillis(nanos));
+                    listOfTimings.add(builder.toString());
                 }
             });
 
@@ -65,7 +73,7 @@ public class MealServiceTest {
     @AfterClass
     public static void afterClassFunc() {
         System.out.println("HERE IS YOUR TEST REPORT");
-        listOfTimings.forEach(tm -> logger.info(tm));
+        listOfTimings.forEach(tm -> logger2.info(tm));
     }
 
     @Test

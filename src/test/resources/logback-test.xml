@@ -29,17 +29,15 @@
 
     <logger name="org.postgresql" level="debug"/>
     <logger name="org.springframework.jdbc" level="debug"/>
-    <logger name="ru.javawebinar.topjava" level="INFO">
+    <logger name="ru.javawebinar.topjava" level="INFO" additivity="false">
         <appender-ref ref="eachTestLog"/>
     </logger>
-    <logger name="testResultLogger" level="INFO">
+    <logger name="testResultLogger" level="INFO" additivity="false">
         <appender-ref ref="testTimer"/>
     </logger>
 
-    <!--
                 <root level="INFO">
                     <appender-ref ref="console"/>
                 </root>
-    -->
 
 </configuration>

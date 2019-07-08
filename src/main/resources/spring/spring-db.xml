@@ -88,6 +88,7 @@
             <constructor-arg ref="jdbcTemplate"/>
         </bean>
     </beans>
+
     <beans profile="jpa">
         <context:component-scan base-package="ru.javawebinar.**.repository.jpa"/>
     </beans>

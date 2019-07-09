@@ -32,7 +32,7 @@ public class DataJpaMealServiceTest extends MealServiceTest {
     @Test
     public void getWithWrongMealId() {
         thrown.expect(NotFoundException.class);
-        Meal actual = service.getMealWithUser((MEAL1_ID + 99999), USER_ID);
+        Meal actual = service.getMealWithUser((0), USER_ID);
         assertThat(actual).isEqualToComparingFieldByField(MEAL5);
     }
 }

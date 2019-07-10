@@ -2,6 +2,8 @@ package ru.javawebinar.topjava.repository.datajpa;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 
@@ -9,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
+@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
 public class DataJpaMealRepository implements MealRepository {
 
     @Autowired
@@ -18,17 +21,18 @@ public class DataJpaMealRepository implements MealRepository {
     private CrudUserRepository crudUserRepository;
 
     @Override
+    @Transactional
     public Meal save(Meal meal, int userId) {
         meal.setUser(crudUserRepository.getOne(userId));
-        if (meal.isNew()) {
+        if (meal.isNew() || get(meal.getId(), userId) != null) {
             return crudMealRepository.save(meal);
         } else {
-            var foundMeal = crudMealRepository.findById(meal.getId()).orElse(null);
-            return checkForNullAndUser(foundMeal, userId) ? crudMealRepository.save(meal) : null;
+            return null;
         }
     }
 
     @Override
+    @Transactional
     public boolean delete(int id, int userId) {
         return crudMealRepository.delete(id, userId) != 0;
     }
@@ -36,7 +40,7 @@ public class DataJpaMealRepository implements MealRepository {
     @Override
     public Meal get(int id, int userId) {
         Meal foundMeal = crudMealRepository.findById(id).orElse(null);
-        return checkForNullAndUser(foundMeal, userId) ? foundMeal : null;
+        return (foundMeal != null && foundMeal.getUser().getId() == userId) ? foundMeal : null;
     }
 
     @Override
@@ -52,9 +56,5 @@ public class DataJpaMealRepository implements MealRepository {
     @Override
     public List<Meal> getBetween(LocalDateTime startDate, LocalDateTime endDate, int userId) {
         return crudMealRepository.findAllBetween(userId, startDate, endDate);
-    }
-
-    private boolean checkForNullAndUser(Meal meal, int userId) {
-        return (meal != null && meal.getUser().getId() == userId);
     }
 }

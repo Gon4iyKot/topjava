@@ -20,7 +20,7 @@ public interface MealRepository {
 
     // null if meal do not belong to userId
     default Meal getMealWithUser(int id, int userId) {
-        return null;
+        throw new UnsupportedOperationException("getMealWithUser");
     }
 
     // ORDERED dateTime desc

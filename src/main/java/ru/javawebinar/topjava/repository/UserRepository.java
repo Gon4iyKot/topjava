@@ -18,7 +18,7 @@ public interface UserRepository {
     User getByEmail(String email);
 
     default User getWithMeals(int id) {
-        return null;
+        throw new UnsupportedOperationException("getWithMeals");
     }
 
     List<User> getAll();

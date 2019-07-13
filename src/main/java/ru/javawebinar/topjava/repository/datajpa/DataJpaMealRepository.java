@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
-@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+@Transactional(readOnly = true, propagation = Propagation.REQUIRED)
 public class DataJpaMealRepository implements MealRepository {
 
     @Autowired

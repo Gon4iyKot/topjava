@@ -24,7 +24,7 @@ public class JspMealController extends AbstractMealController {
     @GetMapping()
     public String meals(Model model) {
         model.addAttribute("meals", getAll());
-        return "/meals";
+        return "meals";
     }
 
     @GetMapping("/filter")
@@ -36,7 +36,7 @@ public class JspMealController extends AbstractMealController {
     ) {
         model.addAttribute("meals", getBetween(parseLocalDate(startDate), parseLocalTime(startTime),
                 parseLocalDate(endDate), parseLocalTime(endTime)));
-        return "/meals";
+        return "meals";
     }
 
     @GetMapping("/delete")

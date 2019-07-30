@@ -1,9 +1,11 @@
 package ru.javawebinar.topjava.web.meal;
 
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
 import ru.javawebinar.topjava.web.SecurityUtil;
 import ru.javawebinar.topjava.web.json.JsonUtil;
@@ -16,7 +18,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.TestUtil.readFromJson;
-import static ru.javawebinar.topjava.TestUtil.readFromJsonMvcResult;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
 import static ru.javawebinar.topjava.util.MealsUtil.getWithExcess;
 import static ru.javawebinar.topjava.web.SecurityUtil.authUserCaloriesPerDay;
@@ -24,6 +25,9 @@ import static ru.javawebinar.topjava.web.SecurityUtil.authUserCaloriesPerDay;
 class MealRestControllerTest extends AbstractControllerTest {
 
     private static final String MEAL_REST_URI = MealRestController.MEALS_REST_URI + "/";
+
+    @Autowired
+    protected MealService mealService;
 
     @Test
     void getAll() throws Exception {

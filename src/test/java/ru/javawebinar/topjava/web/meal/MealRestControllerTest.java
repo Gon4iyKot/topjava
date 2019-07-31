@@ -7,7 +7,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.web.AbstractControllerTest;
-import ru.javawebinar.topjava.web.SecurityUtil;
 import ru.javawebinar.topjava.web.json.JsonUtil;
 
 import java.util.List;
@@ -19,8 +18,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.TestUtil.readFromJson;
 import static ru.javawebinar.topjava.UserTestData.USER_ID;
-import static ru.javawebinar.topjava.util.MealsUtil.getWithExcess;
-import static ru.javawebinar.topjava.web.SecurityUtil.authUserCaloriesPerDay;
 
 class MealRestControllerTest extends AbstractControllerTest {
 
@@ -34,7 +31,7 @@ class MealRestControllerTest extends AbstractControllerTest {
         mockMvc.perform(get(MEAL_REST_URI))
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-                .andExpect(contentJson(getWithExcess(MEALS, authUserCaloriesPerDay())));
+                .andExpect(result -> assertMealTo(result, MEALS));
     }
 
     @Test
@@ -82,7 +79,7 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(contentJson(getWithExcess(List.of(MEAL3, MEAL2, MEAL1), SecurityUtil.authUserCaloriesPerDay())));
+                .andExpect(result -> assertMealTo(result, List.of(MEAL3, MEAL2, MEAL1)));
     }
 
     @Test
@@ -91,6 +88,6 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(contentJson(getWithExcess(List.of(MEAL3, MEAL2), SecurityUtil.authUserCaloriesPerDay())));
+                .andExpect(result -> assertMealTo(result, List.of(MEAL3, MEAL2)));
     }
 }

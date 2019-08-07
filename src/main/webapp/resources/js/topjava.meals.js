@@ -1,7 +1,9 @@
 // $(document).ready(function () {
+var url = "ajax/meals/";
+
 $(function () {
     makeEditable({
-            ajaxUrl: "ajax/meals/",
+            ajaxUrl: url,
             datatableApi: $("#datatable").DataTable({
                 "paging": false,
                 "info": true,
@@ -27,10 +29,35 @@ $(function () {
                 "order": [
                     [
                         0,
-                        "asc"
+                        "desc"
                     ]
                 ]
             })
         }
     );
 });
+
+function filter() {
+    var filterForm = $('#filterForm');
+    $.ajax({
+        type: "GET",
+        url: url + "filter",
+    data: filterForm.serialize()
+    }).done(function (data) {
+        context.datatableApi.clear().rows.add(data).draw();
+        successNoty("Filtered")
+    })
+}
+
+function cancelFilter() {
+    if(confirm("Are you sure?")) {
+        $("#filterForm")[0].reset();
+        $.get(context.ajaxUrl, function (data) {
+            context.datatableApi.clear().rows.add(data).draw();
+        });
+    }
+}
+
+function updateTable() {
+    filter();
+}

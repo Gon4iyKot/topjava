@@ -32,18 +32,13 @@ function deleteRow(id) {
     });
 }
 
-function updateTable() {
-    $.get(context.ajaxUrl, function (data) {
-        context.datatableApi.clear().rows.add(data).draw();
-    });
-}
 
 function save() {
     $.ajax({
         type: "POST",
         url: context.ajaxUrl,
         data: form.serialize()
-    }).done(function () {
+    }).done(function (data) {
         $("#editRow").modal("hide");
         updateTable();
         successNoty("Saved");

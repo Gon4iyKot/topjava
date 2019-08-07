@@ -33,7 +33,38 @@
                 <button type="submit"><spring:message code="meal.filter"/></button>
             </form>
         --%>
-
+        <div class="card border-dark">
+            <div class="card-body pb-0">
+                <form id="filterForm">
+                    <div class="row">
+                        <div class="offset-1 col-2">
+                            <label for="startDate" class="col-form-label"><spring:message
+                                    code="meal.startDate"/></label>
+                            <input type="date" class="form-control" id="startDate" name="startDate">
+                        </div>
+                        <div class="offset-1 col-2">
+                            <label for="endDate" class="col-form-label"><spring:message code="meal.endDate"/></label>
+                            <input type="date" class="form-control" id="endDate" name="endDate">
+                        </div>
+                        <div class="offset-1 col-2">
+                            <label for="startTime"><spring:message code="meal.startTime"/></label>
+                            <input type="time" class="form-control" id="startTime" name="startTime">
+                        </div>
+                        <div class="offset-1 col-2">
+                            <label for="endTime"><spring:message code="meal.endTime"/></label>
+                            <input type="time" class="form-control" id="endTime" name="endTime">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-right">
+                <button class="btn btn-danger" onclick="cancelFilter()"><span class="fa fa-remove"></span>
+                <spring:message code="common.cancel"/></button>
+                <button class="btn btn-primary" onclick="filter()"><span class="fa fa-filter"></span>
+                    <spring:message code="meal.filter"/></button>
+            </div>
+        </div>
+        <br>
         <button class="btn btn-primary" onclick="add()">
             <span class="fa fa-plus"></span>
             <spring:message code="meal.add"/>

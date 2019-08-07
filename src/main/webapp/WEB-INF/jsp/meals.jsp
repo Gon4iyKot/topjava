@@ -11,28 +11,6 @@
 <div class="jumbotron pt-4">
     <div class="container">
         <h3 class="text-center"><spring:message code="meal.title"/></h3>
-
-        <%--
-            <form method="get" action="meals/filter">
-                <dl>
-                    <dt><spring:message code="meal.startDate"/>:</dt>
-                    <dd><input type="date" name="startDate" value="${param.startDate}"></dd>
-                </dl>
-                <dl>
-                    <dt><spring:message code="meal.endDate"/>:</dt>
-                    <dd><input type="date" name="endDate" value="${param.endDate}"></dd>
-                </dl>
-                <dl>
-                    <dt><spring:message code="meal.startTime"/>:</dt>
-                    <dd><input type="time" name="startTime" value="${param.startTime}"></dd>
-                </dl>
-                <dl>
-                    <dt><spring:message code="meal.endTime"/>:</dt>
-                    <dd><input type="time" name="endTime" value="${param.endTime}"></dd>
-                </dl>
-                <button type="submit"><spring:message code="meal.filter"/></button>
-            </form>
-        --%>
         <div class="card border-dark">
             <div class="card-body pb-0">
                 <form id="filterForm">
@@ -59,7 +37,7 @@
             </div>
             <div class="card-footer text-right">
                 <button class="btn btn-danger" onclick="cancelFilter()"><span class="fa fa-remove"></span>
-                <spring:message code="common.cancel"/></button>
+                    <spring:message code="common.cancel"/></button>
                 <button class="btn btn-primary" onclick="filter()"><span class="fa fa-filter"></span>
                     <spring:message code="meal.filter"/></button>
             </div>

@@ -41,6 +41,18 @@ $(function () {
     );
 });
 
+function chengeActivity(id, box) {
+    var chenge = box.prop("checked");
+    $.ajax({
+        type: "POST",
+        url: context.ajaxUrl + id,
+        data: "chengeActivity=" + chenge
+    }).done(function () {
+        updateTable();
+        successNoty("Activity changed")
+    });
+}
+
 function updateTable() {
     $.get(context.ajaxUrl, function (data) {
         context.datatableApi.clear().rows.add(data).draw();

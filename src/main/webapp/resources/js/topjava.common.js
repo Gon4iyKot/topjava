@@ -38,7 +38,7 @@ function save() {
         type: "POST",
         url: context.ajaxUrl,
         data: form.serialize()
-    }).done(function (data) {
+    }).done(function () {
         $("#editRow").modal("hide");
         updateTable();
         successNoty("Saved");

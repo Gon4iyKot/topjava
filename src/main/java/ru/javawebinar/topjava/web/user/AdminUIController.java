@@ -37,4 +37,13 @@ public class AdminUIController extends AbstractUserController {
             super.create(user);
         }
     }
+
+    @PostMapping(value = "/{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    public void chengeActivity(@PathVariable(name = "id") int id,
+                               @RequestParam("chengeActivity") Boolean deactivate) {
+        User tempUser = service.get(id);
+        tempUser.setEnabled(deactivate);
+        service.update(tempUser);
+    }
 }

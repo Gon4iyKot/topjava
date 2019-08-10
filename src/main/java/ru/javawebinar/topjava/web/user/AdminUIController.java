@@ -41,7 +41,7 @@ public class AdminUIController extends AbstractUserController {
     @PostMapping(value = "/{id}")
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void chengeActivity(@PathVariable(name = "id") int id,
-                               @RequestParam("chengeActivity") Boolean deactivate) {
+                               @RequestParam("changeActivity") Boolean deactivate) {
         User tempUser = service.get(id);
         tempUser.setEnabled(deactivate);
         service.update(tempUser);

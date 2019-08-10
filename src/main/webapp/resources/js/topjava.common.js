@@ -72,3 +72,7 @@ function failNoty(jqXHR) {
         layout: "bottomRight"
     }).show();
 }
+
+function updateTableCommon(data) {
+    context.datatableApi.clear().rows.add(data).draw();
+}

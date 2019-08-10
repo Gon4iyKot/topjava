@@ -41,20 +41,18 @@ $(function () {
     );
 });
 
-function chengeActivity(id, box) {
-    var chenge = box.prop("checked");
+function changeActivity(id, box) {
+    var change = box.prop("checked");
     $.ajax({
         type: "POST",
         url: context.ajaxUrl + id,
-        data: "chengeActivity=" + chenge
+        data: "changeActivity=" + change
     }).done(function () {
-        updateTable();
-        successNoty("Activity changed")
+        box.closest("tr").attr("data-activeUser", change);
+        successNoty("Activity changed");
     });
 }
 
 function updateTable() {
-    $.get(context.ajaxUrl, function (data) {
-        context.datatableApi.clear().rows.add(data).draw();
-    });
+    $.get(context.ajaxUrl, updateTableCommon(data));
 }

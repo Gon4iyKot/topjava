@@ -125,5 +125,12 @@
     </div>
 </div>
 <jsp:include page="fragments/footer.jsp"/>
+<jsp:include page="/resources/js/i18n.jsp"/>
 </body>
+<script type="text/javascript">
+    const i18n = [];
+    i18n["addTitle"] = '<spring:message code="meal.add"/>';
+    i18n["editTitle"] = '<spring:message code="meal.edit"/>';
+    makeSomeI18n(i18n);
+</script>
 </html>

@@ -5,7 +5,7 @@ $(function () {
         timepicker: false,
         onShow: function () {
             this.setOptions({
-                maxDate: $("#endDate").val() ? $("#endDate").val() : false
+                maxDate: minMaxSolver($("#endDate"))
             })
         }
     });
@@ -15,16 +15,44 @@ $(function () {
         timepicker: false,
         onShow: function () {
             this.setOptions({
-                minDate: $("#startDate").val() ? $("#startDate").val() : false
+                minDate: minMaxSolver($("#startDate"))
             })
         }
-
     });
 
-
-    $("#startTime, #endTime").datetimepicker({
+    $("#startTime").datetimepicker({
         format: 'H:i',
-        datepicker: false
+        datepicker: false,
+        onShow: function () {
+            this.setOptions({
+                maxTime: minMaxSolver($("#endTime"))
+            })
+
+        }
+    });
+
+    $("#endTime").datetimepicker({
+        format: 'H:i',
+        datepicker: false,
+        onShow: function () {
+            this.setOptions({
+                minTime: minMaxSolver($("#startTime"))
+            })
+        }
+    });
+
+    $.ajaxSetup({
+        converters: {
+            "text json": function (input) {
+                var output = JSON.parse(input);
+                $(output).each(function (index, item) {
+                    console.log(item.dateTime);
+                    item.dateTime = item.dateTime.substring(0, 10) + " " + item.dateTime.substring(11, 16);
+                    console.log(item.dateTime)
+                });
+                return output
+            }
+        }
     });
 
     $("#dateTime").datetimepicker({
@@ -57,13 +85,7 @@ $(function () {
             "info": true,
             "columns": [
                 {
-                    "data": "dateTime",
-                    "render": function (data, type, row) {
-                        if (type === "display") {
-                            return data.substring(0, 10) + " " + data.substring(11, 16);
-                        }
-                        return data;
-                    }
+                    "data": "dateTime"
                 },
                 {
                     "data": "description"
@@ -95,3 +117,7 @@ $(function () {
         updateTable: updateFilteredTable
     });
 });
+
+function minMaxSolver(limit) {
+    return limit.val() ? limit.val() : false
+}

@@ -46,9 +46,7 @@ $(function () {
             "text json": function (input) {
                 var output = JSON.parse(input);
                 $(output).each(function (index, item) {
-                    console.log(item.dateTime);
                     item.dateTime = item.dateTime.substring(0, 10) + " " + item.dateTime.substring(11, 16);
-                    console.log(item.dateTime)
                 });
                 return output
             }

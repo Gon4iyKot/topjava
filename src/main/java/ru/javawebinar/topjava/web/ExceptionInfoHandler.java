@@ -7,6 +7,8 @@ import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.validation.BindException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,6 +21,7 @@ import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.StringJoiner;
 
 import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 
@@ -46,6 +49,30 @@ public class ExceptionInfoHandler {
         return logAndGetErrorInfo(req, e, false, VALIDATION_ERROR);
     }
 
+    @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(BindException.class)
+    public ErrorInfo bindError(HttpServletRequest request, Exception e) {
+        return logAndGetErrorInfo(request, e, true, VALIDATION_ERROR);
+    }
+
+    @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ErrorInfo validationError(HttpServletRequest request, Exception e) {
+        StringJoiner joiner = new StringJoiner("<br>");
+        ((MethodArgumentNotValidException) e).getBindingResult().getFieldErrors().forEach(
+                fe -> {
+                    String msg = fe.getDefaultMessage();
+                    if (msg != null) {
+                        if (!msg.startsWith(fe.getField())) {
+                            msg = fe.getField() + ' ' + msg;
+                        }
+                        joiner.add(msg);
+                    }
+                });
+        return new ErrorInfo(request.getRequestURL(), VALIDATION_ERROR, joiner.toString());
+    }
+
+
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ErrorInfo handleError(HttpServletRequest req, Exception e) {
@@ -60,6 +87,10 @@ public class ExceptionInfoHandler {
         } else {
             log.warn("{} at request  {}: {}", errorType, req.getRequestURL(), rootCause.toString());
         }
-        return new ErrorInfo(req.getRequestURL(), errorType, rootCause.toString());
+        if (rootCause.toString().contains("users_unique_email_idx")) {
+            return new ErrorInfo(req.getRequestURL(), errorType, "User with this email already exists");
+        } else {
+            return new ErrorInfo(req.getRequestURL(), errorType, rootCause.toString());
+        }
     }
 }

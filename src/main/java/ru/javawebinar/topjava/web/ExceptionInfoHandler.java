@@ -21,7 +21,8 @@ import ru.javawebinar.topjava.util.exception.IllegalRequestDataException;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.StringJoiner;
+import java.util.ArrayList;
+import java.util.List;
 
 import static ru.javawebinar.topjava.util.exception.ErrorType.*;
 
@@ -52,24 +53,15 @@ public class ExceptionInfoHandler {
     @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
     @ExceptionHandler(BindException.class)
     public ErrorInfo bindError(HttpServletRequest request, Exception e) {
-        return logAndGetErrorInfo(request, e, true, VALIDATION_ERROR);
+        String[] details = getMultipleErrors(e);
+        return new ErrorInfo(request.getRequestURL(), VALIDATION_ERROR, details);
     }
 
     @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY)
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ErrorInfo validationError(HttpServletRequest request, Exception e) {
-        StringJoiner joiner = new StringJoiner("<br>");
-        ((MethodArgumentNotValidException) e).getBindingResult().getFieldErrors().forEach(
-                fe -> {
-                    String msg = fe.getDefaultMessage();
-                    if (msg != null) {
-                        if (!msg.startsWith(fe.getField())) {
-                            msg = fe.getField() + ' ' + msg;
-                        }
-                        joiner.add(msg);
-                    }
-                });
-        return new ErrorInfo(request.getRequestURL(), VALIDATION_ERROR, joiner.toString());
+        String[] details = getMultipleErrors(e);
+        return new ErrorInfo(request.getRequestURL(), VALIDATION_ERROR, details);
     }
 
 
@@ -88,9 +80,29 @@ public class ExceptionInfoHandler {
             log.warn("{} at request  {}: {}", errorType, req.getRequestURL(), rootCause.toString());
         }
         if (rootCause.toString().contains("users_unique_email_idx")) {
-            return new ErrorInfo(req.getRequestURL(), errorType, "User with this email already exists");
+            String[] result = {"User with this email already exists"};
+            return new ErrorInfo(req.getRequestURL(), errorType, result);
         } else {
-            return new ErrorInfo(req.getRequestURL(), errorType, rootCause.toString());
+            String[] result = {rootCause.toString()};
+            return new ErrorInfo(req.getRequestURL(), errorType, result);
         }
+    }
+
+    private static String[] getMultipleErrors(Exception e) {
+        List errorList = new ArrayList<String>();
+        ((e instanceof BindException) ? ((BindException) e).getBindingResult() : ((MethodArgumentNotValidException) e).getBindingResult()).getFieldErrors().forEach(
+                fe -> {
+                    String msg = fe.getDefaultMessage();
+                    if (msg != null) {
+                        if (!msg.startsWith(fe.getField())) {
+                            msg = fe.getField() + ' ' + msg;
+                        }
+                        errorList.add(msg);
+
+                    }
+                });
+        String[] result = new String[errorList.size()];
+        errorList.toArray(result);
+        return result;
     }
 }

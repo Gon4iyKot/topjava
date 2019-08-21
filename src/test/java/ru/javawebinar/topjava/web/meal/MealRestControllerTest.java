@@ -125,4 +125,14 @@ class MealRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(contentJson(getWithExcess(MEALS, USER.getCaloriesPerDay())));
     }
+
+    @Test
+    void createWithFakeData() throws Exception {
+        Meal created = new Meal(null, null, null, 0);
+        mockMvc.perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(created))
+                .with(userHttpBasic(ADMIN)))
+                .andExpect(status().isUnprocessableEntity());
+    }
 }

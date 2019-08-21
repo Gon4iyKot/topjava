@@ -89,7 +89,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.put(REST_URL + USER_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(ADMIN))
-                .content(JsonUtil.writeValue(updated)))
+                .content(JsonUtil.writeAdditionProps(updated, "password", USER.getPassword())))
                 .andExpect(status().isNoContent());
 
         assertMatch(userService.get(USER_ID), updated);
@@ -97,7 +97,7 @@ class AdminRestControllerTest extends AbstractControllerTest {
 
     @Test
     void createWithLocation() throws Exception {
-        User expected = new User(null, "New", "new@gmail.com", "newPass",  2300, Role.ROLE_USER, Role.ROLE_ADMIN);
+        User expected = new User(null, "New", "new@gmail.com", "newPass", 2300, Role.ROLE_USER, Role.ROLE_ADMIN);
         ResultActions action = mockMvc.perform(MockMvcRequestBuilders.post(REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .with(userHttpBasic(ADMIN))
@@ -129,5 +129,15 @@ class AdminRestControllerTest extends AbstractControllerTest {
                 .andExpect(status().isNoContent());
 
         assertFalse(userService.get(USER_ID).isEnabled());
+    }
+
+    @Test
+    void createWithFakeData() throws Exception {
+        User expected = new User(null, null, "", "", 2300, Role.ROLE_USER, Role.ROLE_ADMIN);
+        mockMvc.perform(MockMvcRequestBuilders.post(REST_URL)
+                .contentType(MediaType.APPLICATION_JSON)
+                .with(userHttpBasic(ADMIN))
+                .content(jsonWithPassword(expected, "newPass")))
+                .andExpect(status().isUnprocessableEntity());
     }
 }
